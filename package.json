@@ -1,39 +1,36 @@
-{ 
-  "name": "mongoose-uniqueslugs", 
-
-  "description": "Enhances models to automatically make duplicate slugs unique on save operations", 
-
-  "maintainers":
-  [ 
-    { 
-      "name": "Thomas Boutell", 
-      "web": "https://github.com/boutell"
+{
+  "name": "mongoose-uniqueslugs",
+  "description": "Enhances models to automatically make duplicate slugs unique on save operations",
+  "maintainers": [
+    {
+      "name": "Thomas Boutell",
+      "url": "https://github.com/boutell"
     }
-  ], 
-
+  ],
   "main": "index",
-
-  "version": "0.0.4", 
-
+  "version": "0.0.4",
   "dependencies": {
     "mongoose": "2.5.10"
   },
-
-  "repository" :
-  { 
-    "type" : "git", 
-    "url" : "http://github.com/punkave/mongoose-uniqueslugs.git"
-  }, 
-
-  "bugs" : { 
-    "web" : "http://github.com/punkave/mongoose-uniqueslugs/issues" 
-  }, 
-
-  "licenses" :
-    [ 
-      { 
-        "type" : "MIT", 
-        "url" : "http://github.com/powmedia/mongoose-uniqueslugs/raw/master/LICENSE"
-      }
-    ]
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/punkave/mongoose-uniqueslugs.git"
+  },
+  "bugs": {
+    "url": "http://github.com/punkave/mongoose-uniqueslugs/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/powmedia/mongoose-uniqueslugs/raw/master/LICENSE"
+    }
+  ],
+  "gitHead": "98daf22e064422010e3a2f0c6ad507f4d4e1d795",
+  "readme": "mongoose-uniqueslugs plugin\n===========================\n\nThis plugin guarantees unique slugs for model objects. Specifically, this plugin can extend any Mongoose model that \nhas a unique index on a 'slug' field so that if a unique index error occurs on 'slug', a random digit is added to \nthe slug and the save operation is retried until it works. This is concurrency-safe even if you have lots of inserts \ngoing on from multiple machines, etc. \n\nHere's how to use it. It differs from other plugins because we must modify the model object to add a save() \nwrapper that gets first crack at errors.\n\n1. Make your schema the usual way (leave out the slug field, we'll add that for you)\n\n2. Require the unique slug plugin\n\n      var mongooseUniqueSlugs = require('mongooseUniqueSlugs');\n\n3. Enhance the schema\n\n      mongooseUniqueSlugs.enhanceSchema(mediaItemSchema);\n\n4. Get your model\n\n      var MediaItem = mongoose.model('MediaItem', mediaItemSchema);\n\n5. Enhance your model. (This is necessary in order to retry save() operations correctly)\n\n      mongooseUniqueSlugs.enhanceModel(MediaItem);\n\nALSO: note that it is also very important to make sure your indexes have really \nbeen applied before you try to do things like inserts! Otherwise you may not get \nyour unique index error until it is too late.\n \n    MediaItem.on('index', function()\n    {\n      nowICanSafelyInsertThings();\n    });\n\nAll save() operations now automatically get upgraded to use \"safe: true\" in order to make this check for slug uniqueness possible.\n\nOptions\n=======\n\nYou can pass options as a second parameter to enhanceSchema(). The available options are:\n\nsource: if defined, this is the property to be converted to a slug. If not defined, 'title' is assumed.\n\ndisallow: if defined, this is a regular expression object that matches characters that should be REMOVED from the slug. If not defined, the following regular expression is used, replacing everythign except letters and numbers with '-' (unless that is overridden also):\n\n    /[^\\w\\d]+/g;\n\nsubstitute: if defined, this is the character used to replace characters that are not permitted in slugs. Note that runs of more than one substitute character are folded to just one, and any substitute characters at the beginning and end are automatically removed. If not defined, '-' is assumed.\n\naddSlugManually: if true, the plugin will NOT add a unique slug field to your schema automatically. Use this option when you prefer to add the field yourself, for instance so that you can define a compound index on a second field (you must still define some kind of unique index). If not specified, a 'slug' field is added automatically with a unique index on that field only.\n",
+  "readmeFilename": "README.md",
+  "homepage": "https://github.com/punkave/mongoose-uniqueslugs#readme",
+  "_id": "mongoose-uniqueslugs@0.0.4",
+  "_shasum": "e13bd6ab31275625baaeadc806284cbe092c9cd0",
+  "_from": "git+https://github.com/Kaylors/mongoose-uniqueslugs.git#master",
+  "_resolved": "git+https://github.com/Kaylors/mongoose-uniqueslugs.git#98daf22e064422010e3a2f0c6ad507f4d4e1d795"
 }
